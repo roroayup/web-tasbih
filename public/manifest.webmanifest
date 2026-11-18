@@ -1,0 +1,11 @@
+{
+  "name": "Tasbih Digital",
+  "short_name": "Tasbih",
+  "description": "Penghitung tasbih dengan bacaan dzikir kustom",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#020c06",
+  "theme_color": "#020c06",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
