@@ -11,6 +11,9 @@ Penghitung tasbih digital dengan bacaan dzikir yang bisa ditulis sendiri.
 - Tersimpan otomatis di perangkat (localStorage), bisa dipasang sebagai aplikasi (PWA)
 - Keyboard: Spasi/Enter untuk tambah, Backspace untuk kurang
 
+## Pratinjau (GitHub Pages)
+https://roroayup.github.io/web-tasbih/ — aktifkan sekali di Settings → Pages → Source: **GitHub Actions**.
+
 ## Hosting (Firebase)
 Deploy otomatis lewat GitHub Actions setiap push ke `main`.
 

@@ -8,9 +8,16 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      FIREBASE_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
     steps:
+      - name: Skip if Firebase is not configured yet
+        if: env.FIREBASE_SA == ''
+        run: echo "::notice::Secret FIREBASE_SERVICE_ACCOUNT belum diset — deploy Firebase dilewati."
       - uses: actions/checkout@v4
+        if: env.FIREBASE_SA != ''
       - uses: FirebaseExtended/action-hosting-deploy@v0
+        if: env.FIREBASE_SA != ''
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
