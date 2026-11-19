@@ -15,12 +15,17 @@ Penghitung tasbih digital dengan bacaan dzikir yang bisa ditulis sendiri.
 https://roroayup.github.io/web-tasbih/ — aktifkan sekali di Settings → Pages → Source: **GitHub Actions**.
 
 ## Hosting (Firebase)
-Deploy otomatis lewat GitHub Actions setiap push ke `main`.
-
-1. Buat project Firebase (ID default: `web-tasbih`; kalau berbeda, ubah `.firebaserc`
-   atau set repository variable `FIREBASE_PROJECT_ID`).
-2. Buat service account: `firebase init hosting:github` atau
-   Google Cloud Console → IAM → Service Accounts → key JSON (role *Firebase Hosting Admin*).
-3. Simpan isi JSON sebagai secret repo `FIREBASE_SERVICE_ACCOUNT`.
+Live: **https://portfolio-tasbih.web.app** (project Firebase: `portfolio-tasbih`)
 
 Deploy manual: `npx firebase-tools deploy --only hosting`
+
+### Deploy otomatis (GitHub Actions)
+Workflow `firebase-hosting.yml` deploy setiap push ke `main`, tapi dilewati selama
+secret `FIREBASE_SERVICE_ACCOUNT` belum diset. Untuk mengaktifkan:
+
+1. Buat service account: `firebase init hosting:github` atau
+   Google Cloud Console (project `portfolio-tasbih`) → IAM → Service Accounts → key JSON
+   (role *Firebase Hosting Admin*).
+2. Simpan isi JSON sebagai secret repo `FIREBASE_SERVICE_ACCOUNT`.
+
+Untuk deploy ke project lain, ubah `.firebaserc` atau set repository variable `FIREBASE_PROJECT_ID`.
