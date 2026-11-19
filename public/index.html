@@ -42,13 +42,12 @@
   .hidden-count .count{opacity:0}
 
   /* ring */
-  .ring-wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:8px 0}
-  .ring{position:relative;width:min(88vw,460px,calc(100dvh - 470px));aspect-ratio:1;min-width:220px;border-radius:50%;touch-action:manipulation}
+  .app{touch-action:manipulation;cursor:pointer}
+  .ring-wrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:4px 0}
+  .ring{position:relative;height:min(100%,94vw,520px);aspect-ratio:1;min-height:200px;border-radius:50%}
   .ring svg{width:100%;height:100%;overflow:visible}
-  .ring .plus{position:absolute;inset:0;margin:auto;width:34%;height:34%;color:var(--accent);pointer-events:none;transition:transform .1s}
-  .ring:active .plus{transform:scale(.9)}
-  .ring .remain{position:absolute;left:0;right:0;top:9%;text-align:center;color:var(--accent);font-size:clamp(28px,7vw,40px);font-weight:300;pointer-events:none}
-  .ring.done .remain{font-size:18px;top:11%}
+  .ring .plus{position:absolute;inset:0;margin:auto;width:48%;height:48%;color:var(--accent);pointer-events:none;transition:transform .1s}
+  .ring.press .plus{transform:scale(.9)}
 
   /* bottom */
   .bottom{display:flex;justify-content:space-between;align-items:center;padding:0 24px 22px}
@@ -130,7 +129,6 @@
         <circle id="arc" cx="100" cy="100" r="95" fill="none" stroke="#0af58f" stroke-width="2.4" stroke-linecap="round" transform="rotate(-90 100 100)" stroke-dasharray="0 1000"/>
         <g id="handle"><rect x="95.5" y="-2" width="9" height="15" rx="4.5" fill="#0af58f"/></g>
       </svg>
-      <div class="remain" id="remain"></div>
       <svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 2v20M2 12h20"/></svg>
     </div>
   </div>
@@ -240,9 +238,6 @@
     const frac = Math.min(p.count / p.target, 1);
     arc.setAttribute('stroke-dasharray', `${frac * CIRC} ${CIRC}`);
     handle.setAttribute('transform', `rotate(${frac * 360} 100 100)`);
-    const left = p.target - p.count;
-    ring.classList.toggle('done', left <= 0);
-    $('remain').textContent = left > 0 ? left : 'Selesai — ketuk untuk putaran baru';
     app.classList.toggle('hidden-count', !!S.hidden);
   }
 
@@ -265,7 +260,8 @@
     } else {
       buzz(18);
     }
-    const c = $('count'); c.classList.add('bump'); setTimeout(() => c.classList.remove('bump'), 80);
+    const c = $('count'); c.classList.add('bump'); ring.classList.add('press');
+    setTimeout(() => { c.classList.remove('bump'); ring.classList.remove('press'); }, 100);
     save(); render();
   }
   function minus(){
@@ -276,7 +272,11 @@
     buzz(10); save(); render();
   }
 
-  ring.addEventListener('pointerdown', e => { e.preventDefault(); add(); });
+  // tap anywhere on the screen (except buttons) adds; one pointer at a time
+  app.addEventListener('pointerdown', e => {
+    if (!e.isPrimary || e.button > 0 || e.target.closest('button')) return;
+    e.preventDefault(); add();
+  });
   ring.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); add(); } });
   document.addEventListener('keydown', e => {
     if (document.querySelector('.sheet.on')) return;
@@ -400,7 +400,7 @@
   let lock;
   async function wake(){ try { if ('wakeLock' in navigator && document.visibilityState === 'visible') lock = await navigator.wakeLock.request('screen'); } catch(e) {} }
   document.addEventListener('visibilitychange', wake);
-  ring.addEventListener('pointerdown', () => { if (!lock) wake(); }, {once:true});
+  app.addEventListener('pointerdown', () => { if (!lock) wake(); }, {once:true});
 
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     navigator.serviceWorker.register('sw.js').catch(() => {});
